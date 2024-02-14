@@ -33,7 +33,7 @@ namespace TestProject1
             if (i <= 3)
                 return new string('I', i);
 
-            if (i >= 5 && i <= 8)
+            if (i <= 8)
             {
                 var res = i % 5;
 
@@ -41,9 +41,6 @@ namespace TestProject1
                 return strRes;
             }
                 
-
-            
-
             throw new NotImplementedException($"{i} cannot be parsed");
         }
         /*
