@@ -92,6 +92,9 @@ namespace TestProject1
 
         public static int ConvertRomanNumber(string romanNumber)
         {
+            if (string.IsNullOrWhiteSpace(romanNumber))
+                throw new ArgumentNullException(nameof(romanNumber));
+
             var resultInteger = 0;
             for (int romanNumberIndex = 0; romanNumberIndex < romanNumber.Length; romanNumberIndex++)
             {
