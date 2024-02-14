@@ -83,33 +83,36 @@ namespace TestProject1
         public static int ConvertRomanNumber(string romanNumber)
         {
             var resultInteger = 0;
-            for (int i = 0; i < romanNumber.Length; i++)
+            for (int romanNumberIndex = 0; romanNumberIndex < romanNumber.Length; romanNumberIndex++)
             {
-                char romanNumeral = romanNumber[i];
+                char romanNumeral = romanNumber[romanNumberIndex];
                 var arabicNumeral = RomanToArabicNumerals[romanNumeral];
-                var subtract = 0;
-
-                for (int j = 1; j < 4; j++)
-                {
-                    if (i + j < romanNumber.Length)
-                    {
-                        char nextRomanNumeral = romanNumber[i + j];
-                        if (RomanToArabicNumerals[romanNumeral] >= RomanToArabicNumerals[nextRomanNumeral])
-                        {
-                            break;
-                        }
-                        else
-                        {
-                            subtract += RomanToArabicNumerals[romanNumeral];
-                        }
-                    }
-                }
-                if(subtract == 0)
-                    resultInteger += arabicNumeral;
+                if (TryGetNumberToSubstract(romanNumber, romanNumberIndex, romanNumeral, out var numberToSubstract))
+                    resultInteger -= numberToSubstract;
                 else
-                    resultInteger -= subtract;
+                    resultInteger += arabicNumeral;
+
             }
             return resultInteger;
+        }
+
+        private static bool TryGetNumberToSubstract(string romanNumber, int romanNumberIndex, char romanNumeral, out int numberToSubstract)
+        {
+            numberToSubstract = 0;
+
+            for (int i = 1; i < 4; i++)
+            {
+                if (romanNumberIndex + i < romanNumber.Length)
+                {
+                    char nextRomanNumeral = romanNumber[romanNumberIndex + i];
+                    if (RomanToArabicNumerals[romanNumeral] >= RomanToArabicNumerals[nextRomanNumeral])
+                        break;
+
+                    numberToSubstract += RomanToArabicNumerals[romanNumeral];
+                }
+            }
+
+            return numberToSubstract != 0;
         }
 
         private static readonly SortedDictionary<int, char> ArabicToRomanNumerals = new()
