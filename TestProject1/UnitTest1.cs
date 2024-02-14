@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using FluentAssertions;
+using static System.Net.Mime.MediaTypeNames;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TestProject1
@@ -22,7 +23,7 @@ namespace TestProject1
         {
             GetRomanNumber(number).Should().Be(roemisch);
         }
-        
+
         [Theory]
         [InlineData(11, "XI")]
         [InlineData(37, "XXXVII")]
@@ -65,7 +66,7 @@ namespace TestProject1
         public void Below_Zero_Not_Supported()
         {
             Action act = () => GetRomanNumber(0);
-            act.Should().Throw<ArgumentOutOfRangeException>("0 is not supported number",0);
+            act.Should().Throw<ArgumentOutOfRangeException>("0 is not supported number", 0);
         }
 
         [Theory]
@@ -93,7 +94,7 @@ namespace TestProject1
         public void More_Than_Three_Roman_Numeral_Invalid(string romanNumber)
         {
             Action act = () => ConvertRomanNumber(romanNumber);
-            act.Should().Throw<InvalidOperationException> ($"Cannot convert invalid roman number {romanNumber}. More than three of the same roman numerals in a row.");
+            act.Should().Throw<InvalidOperationException>($"Cannot convert invalid roman number {romanNumber}. More than three of the same roman numerals in a row.");
         }
 
         private static readonly SortedDictionary<char, int> RomanToArabicNumerals = new()
@@ -112,13 +113,19 @@ namespace TestProject1
             if (string.IsNullOrWhiteSpace(romanNumber))
                 throw new ArgumentNullException(nameof(romanNumber));
 
+            var longestSequence = new string(romanNumber.Select((c, index) => romanNumber.Substring(index).TakeWhile(e => e == c)).OrderByDescending(e => e.Count()).First().ToArray());
+            if (longestSequence.Length >= 4)
+                throw new InvalidOperationException($"Cannot convert invalid roman number {romanNumber}. More than three of the same roman numerals in a row.");
+
             var resultInteger = 0;
             for (int romanNumberIndex = 0; romanNumberIndex < romanNumber.Length; romanNumberIndex++)
             {
+
+
                 char romanNumeral = romanNumber[romanNumberIndex];
                 if (!RomanToArabicNumerals.TryGetValue(romanNumeral, out var integer))
                     throw new ArgumentOutOfRangeException(nameof(romanNumber));
-                
+
                 if (TryGetNumberToSubstract(romanNumber, romanNumberIndex, integer, out var numberToSubstract))
                     resultInteger -= numberToSubstract;
                 else
@@ -131,12 +138,15 @@ namespace TestProject1
         private static bool TryGetNumberToSubstract(string romanNumber, int romanNumberIndex, int integer, out int numberToSubstract)
         {
             numberToSubstract = 0;
+            const int maxRomanNumbersInARow = 3;
 
-            for (int i = 1; i < 4; i++)
+            for (int i = 0; i < maxRomanNumbersInARow; i++)
             {
-                if (romanNumberIndex + i < romanNumber.Length)
+                var nextIndex = romanNumberIndex + i + 1;
+
+                if (nextIndex < romanNumber.Length)
                 {
-                    char nextRomanNumeral = romanNumber[romanNumberIndex + i];
+                    char nextRomanNumeral = romanNumber[nextIndex];
                     if (!RomanToArabicNumerals.TryGetValue(nextRomanNumeral, out var nextInteger))
                         throw new ArgumentOutOfRangeException(nameof(nextRomanNumeral));
 
