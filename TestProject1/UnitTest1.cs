@@ -84,7 +84,7 @@ namespace TestProject1
         public void Undefined_Roman_Numerals_Not_Supported(string romanNumber)
         {
             Action act = () => ConvertRomanNumber(romanNumber);
-            act.Should().Throw<ArgumentOutOfRangeException>();
+            act.Should().Throw<ArgumentOutOfRangeException>(nameof(romanNumber));
         }
 
         private static readonly SortedDictionary<char, int> RomanToArabicNumerals = new()
@@ -107,11 +107,13 @@ namespace TestProject1
             for (int romanNumberIndex = 0; romanNumberIndex < romanNumber.Length; romanNumberIndex++)
             {
                 char romanNumeral = romanNumber[romanNumberIndex];
-                var arabicNumeral = RomanToArabicNumerals[romanNumeral];
+                if (!RomanToArabicNumerals.TryGetValue(romanNumeral, out var integer))
+                    throw new ArgumentOutOfRangeException(nameof(romanNumber));
+                
                 if (TryGetNumberToSubstract(romanNumber, romanNumberIndex, romanNumeral, out var numberToSubstract))
                     resultInteger -= numberToSubstract;
                 else
-                    resultInteger += arabicNumeral;
+                    resultInteger += integer;
 
             }
             return resultInteger;
@@ -126,7 +128,10 @@ namespace TestProject1
                 if (romanNumberIndex + i < romanNumber.Length)
                 {
                     char nextRomanNumeral = romanNumber[romanNumberIndex + i];
-                    if (RomanToArabicNumerals[romanNumeral] >= RomanToArabicNumerals[nextRomanNumeral])
+                    if (!RomanToArabicNumerals.TryGetValue(nextRomanNumeral, out var nextInteger))
+                        throw new ArgumentOutOfRangeException(nameof(nextRomanNumeral));
+
+                    if (RomanToArabicNumerals[romanNumeral] >= nextInteger)
                         break;
 
                     numberToSubstract += RomanToArabicNumerals[romanNumeral];
