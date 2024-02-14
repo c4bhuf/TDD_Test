@@ -396,5 +396,3 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-/TestProject1/.vs/TestProject1/v17/TestStore/0/000.testlog
-/.gitignore

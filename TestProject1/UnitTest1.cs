@@ -1,11 +1,21 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using FluentAssertions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TestProject1
 {
     public class UnitTest1
     {
+        private static SortedDictionary<int, char> ArabicToRomanNumerals = new() 
+        {
+            { 100, 'C' },
+            { 50, 'L' },
+            { 10, 'X' },
+            { 5, 'V' },
+            { 1, 'I' }
+        };
+
         [Theory]
         [InlineData(1, "I")]
         [InlineData(2, "II")]
@@ -25,12 +35,11 @@ namespace TestProject1
         [Theory]
         [InlineData(11, "XI")]
         [InlineData(37, "XXXVII")]
-        [InlineData(45, "VL")]
+        [InlineData(45, "XLV")]
         [InlineData(50, "L")]
         [InlineData(70, "LXX")]
-        [InlineData(99, "IC")]
+        [InlineData(99, "XCIX")]
         [InlineData(100, "C")]
-        [InlineData(150, "CL")]
         public void Check_Roemisch_11_to_100(int number, string roemisch)
         {
             GetRoemisch(number).Should().Be(roemisch);
@@ -43,34 +52,61 @@ namespace TestProject1
             act.Should().Throw<ArgumentOutOfRangeException>("0 is not supported number",0);
         }
 
-
-        string GetRoemisch(int i)
+        public string GetRoemisch(int i)
         {
+            if (i <= 0)
+                throw new ArgumentOutOfRangeException(nameof(i), $"{i} is not supported number");
+
             int teiler;
+            int rest = i;
             var stringBuilder = new StringBuilder();
-            if((teiler = (int)Math.Floor((double)i / 100)) >= 1)
+            foreach (var numberToRoman in ArabicToRomanNumerals.OrderByDescending(kvp => kvp.Key))
             {
-                stringBuilder.Append(new string('C', teiler));
-                i -= teiler * 100;
-            }
-            if ((teiler = (int)Math.Floor((double)i / 50)) >= 1)
-            {
-                stringBuilder.Append(new string('L', teiler));
-                i -= teiler * 50;
+                teiler = AppendRomanNumber(ref rest, stringBuilder, numberToRoman.Value, numberToRoman.Key);
+
+                rest = SubtractionRule(rest, stringBuilder, numberToRoman.Key);
             }
 
             return stringBuilder.ToString();
-            return i switch
-            {
-                <= 0 => throw new ArgumentOutOfRangeException(nameof(i), $"{i} is not supported number"),
-                <= 3 => new string('I', i),
-                4    => "IV",
-                <= 8 => "V" + new string('I', i % 5),
-                9    => "IX",
-                10   => "X",
-                _    => throw new NotImplementedException($"{i} cannot be parsed"),
-            };
         }
+
+        private static int SubtractionRule(int rest, StringBuilder stringBuilder, int number)
+        {
+            if (number == 1)
+                return 0;
+
+            var numberOfZeros = number.ToString().Length - 1;
+            var tenPowOfNumberOfZeros = (int)Math.Pow(10, numberOfZeros);
+            var numberToSubstract = tenPowOfNumberOfZeros - number == 0 ? (int)Math.Pow(10, numberOfZeros - 1) : tenPowOfNumberOfZeros;
+
+            if (rest >= number - numberToSubstract)
+            {
+                rest -= number - numberToSubstract;
+
+                stringBuilder.Append(ArabicToRomanNumerals[numberToSubstract]);
+                stringBuilder.Append(ArabicToRomanNumerals[number]);
+            }
+
+            return rest;
+        }
+
+        private static int AppendRomanNumber(ref int rest, StringBuilder stringBuilder, char romanNumber, int number)
+        {
+            int teiler;
+            if ((teiler = CalculateTeiler(rest, number)) >= 1)
+            {
+                stringBuilder.Append(new string(romanNumber, teiler));
+                rest -= teiler * number;
+            }
+
+            return teiler;
+        }
+
+        public static int CalculateTeiler(int rest, int number)
+        {
+            return (int)Math.Floor((double)rest / number);
+        }
+
         /*
          * I
          * II
