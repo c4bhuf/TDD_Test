@@ -4,18 +4,35 @@ namespace TestProject1
 {
     public class UnitTest1
     {
-        [Fact]
-        public void RangeCheck_Roemisch_1_To_9()
+        [Theory]
+        [InlineData(1, "I")]
+        [InlineData(2, "II")]
+        [InlineData(4, "IV")]
+        [InlineData(5, "V")]
+        [InlineData(7, "VII")]
+        [InlineData(10, "X")]
+        public void Check_Roemisch_1_to_10(int number, string roemisch)
         {
-            GetRoemisch(0).Should().Be("error");
+            GetRoemisch(number).Should().Be(roemisch);
         }
+
+        [Fact]
+        public void BelowZeroNotSupported()
+        {
+            Action act = () => GetRoemisch(0);
+            act.Should().Throw<ArgumentOutOfRangeException>("0 is not supported number",0);
+        }
+
 
         string GetRoemisch(int i)
         {
-            if (i == 1)
-                return "I";
+            if(i <= 0)
+                throw new ArgumentOutOfRangeException(nameof(i),$"{i} is not supported number");
 
-            return "error";
+            if (i <= 3)
+                return new string('I', i);
+
+            throw new NotImplementedException($"{i} cannot be parsed");
         }
         /*
          * I
