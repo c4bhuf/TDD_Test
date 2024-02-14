@@ -90,6 +90,7 @@ namespace TestProject1
 
         [Theory]
         [InlineData("MMMM")]
+        [InlineData("MMMCCCC")]
         [InlineData("IIIIII")]
         public void More_Than_Three_Roman_Numeral_Invalid(string romanNumber)
         {
@@ -110,21 +111,13 @@ namespace TestProject1
 
         public static int ConvertRomanNumber(string romanNumber)
         {
-            if (string.IsNullOrWhiteSpace(romanNumber))
-                throw new ArgumentNullException(nameof(romanNumber));
-
-            var longestSequence = new string(romanNumber.Select((c, index) => romanNumber.Substring(index).TakeWhile(e => e == c)).OrderByDescending(e => e.Count()).First().ToArray());
-            if (longestSequence.Length >= 4)
-                throw new InvalidOperationException($"Cannot convert invalid roman number {romanNumber}. More than three of the same roman numerals in a row.");
+            ValidateRomanNumber(romanNumber);
 
             var resultInteger = 0;
             for (int romanNumberIndex = 0; romanNumberIndex < romanNumber.Length; romanNumberIndex++)
             {
-
-
                 char romanNumeral = romanNumber[romanNumberIndex];
-                if (!RomanToArabicNumerals.TryGetValue(romanNumeral, out var integer))
-                    throw new ArgumentOutOfRangeException(nameof(romanNumber));
+                var integer = RomanToArabicNumerals[romanNumeral];
 
                 if (TryGetNumberToSubstract(romanNumber, romanNumberIndex, integer, out var numberToSubstract))
                     resultInteger -= numberToSubstract;
@@ -133,6 +126,20 @@ namespace TestProject1
 
             }
             return resultInteger;
+        }
+
+        private static void ValidateRomanNumber(string romanNumber)
+        {
+            if (string.IsNullOrWhiteSpace(romanNumber))
+                throw new ArgumentNullException(nameof(romanNumber));
+
+            var longestSequence = new string(romanNumber.Select((romanNumeral, index) => romanNumber[index..].TakeWhile(e => e == romanNumeral)).OrderByDescending(romanNumber => romanNumber.Count()).First().ToArray());
+            if (longestSequence.Length >= 4)
+                throw new InvalidOperationException($"Cannot convert invalid roman number {romanNumber}. More than three of the same roman numerals in a row.");
+
+            var romanNumeralsExist = romanNumber.Any(romanNumeral => !RomanToArabicNumerals.ContainsKey(romanNumeral));
+            if (romanNumeralsExist)
+                throw new ArgumentOutOfRangeException(nameof(romanNumber));
         }
 
         private static bool TryGetNumberToSubstract(string romanNumber, int romanNumberIndex, int integer, out int numberToSubstract)
@@ -144,17 +151,16 @@ namespace TestProject1
             {
                 var nextIndex = romanNumberIndex + i + 1;
 
-                if (nextIndex < romanNumber.Length)
-                {
-                    char nextRomanNumeral = romanNumber[nextIndex];
-                    if (!RomanToArabicNumerals.TryGetValue(nextRomanNumeral, out var nextInteger))
-                        throw new ArgumentOutOfRangeException(nameof(nextRomanNumeral));
+                if (nextIndex >= romanNumber.Length)
+                    break;
 
-                    if (integer >= nextInteger)
-                        break;
+                char nextRomanNumeral = romanNumber[nextIndex];
+                var nextInteger = RomanToArabicNumerals[nextRomanNumeral];
 
-                    numberToSubstract += integer;
-                }
+                if (integer >= nextInteger)
+                    break;
+
+                numberToSubstract += integer;
             }
 
             return numberToSubstract != 0;
