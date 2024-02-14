@@ -87,6 +87,15 @@ namespace TestProject1
             act.Should().Throw<ArgumentOutOfRangeException>(nameof(romanNumber));
         }
 
+        [Theory]
+        [InlineData("MMMM")]
+        [InlineData("IIIIII")]
+        public void More_Than_Three_Roman_Numeral_Invalid(string romanNumber)
+        {
+            Action act = () => ConvertRomanNumber(romanNumber);
+            act.Should().Throw<InvalidOperationException> ($"Cannot convert invalid roman number {romanNumber}. More than three of the same roman numerals in a row.");
+        }
+
         private static readonly SortedDictionary<char, int> RomanToArabicNumerals = new()
         {
             { 'M',  1000 },
