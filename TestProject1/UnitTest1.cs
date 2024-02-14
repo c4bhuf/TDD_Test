@@ -9,6 +9,8 @@ namespace TestProject1
     {
         private static SortedDictionary<int, char> ArabicToRomanNumerals = new() 
         {
+            { 1000, 'M' },
+            { 500, 'D' },
             { 100, 'C' },
             { 50, 'L' },
             { 10, 'X' },
