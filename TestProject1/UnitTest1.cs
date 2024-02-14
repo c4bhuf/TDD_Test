@@ -1,4 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
+using System.Text;
 using FluentAssertions;
 
 namespace TestProject1
@@ -27,8 +28,9 @@ namespace TestProject1
         [InlineData(45, "VL")]
         [InlineData(50, "L")]
         [InlineData(70, "LXX")]
-        [InlineData(99, "IM")]
-        [InlineData(100, "M")]
+        [InlineData(99, "IC")]
+        [InlineData(100, "C")]
+        [InlineData(150, "CL")]
         public void Check_Roemisch_11_to_100(int number, string roemisch)
         {
             GetRoemisch(number).Should().Be(roemisch);
@@ -44,6 +46,20 @@ namespace TestProject1
 
         string GetRoemisch(int i)
         {
+            int teiler;
+            var stringBuilder = new StringBuilder();
+            if((teiler = (int)Math.Floor((double)i / 100)) >= 1)
+            {
+                stringBuilder.Append(new string('C', teiler));
+                i -= teiler * 100;
+            }
+            if ((teiler = (int)Math.Floor((double)i / 50)) >= 1)
+            {
+                stringBuilder.Append(new string('L', teiler));
+                i -= teiler * 50;
+            }
+
+            return stringBuilder.ToString();
             return i switch
             {
                 <= 0 => throw new ArgumentOutOfRangeException(nameof(i), $"{i} is not supported number"),
