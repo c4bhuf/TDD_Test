@@ -45,6 +45,16 @@ namespace TestProject1
             GetRoemisch(number).Should().Be(roemisch);
         }
 
+        [Theory]
+        [InlineData(101, "CI")]
+        [InlineData(1459, "MCDLIX")]
+        [InlineData(2149, "MMCXLIX")]
+        [InlineData(2999, "MMCMXCIX")]
+        public void Check_Roemisch_101_to_3000(int number, string roemisch)
+        {
+            GetRoemisch(number).Should().Be(roemisch);
+        }
+
         [Fact]
         public void BelowZeroNotSupported()
         {
