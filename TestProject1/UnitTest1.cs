@@ -18,7 +18,7 @@ namespace TestProject1
         [InlineData(8, "VIII")]
         [InlineData(9, "IX")]
         [InlineData(10, "X")]
-        public void Check_Roemisch_1_to_10(int number, string roemisch)
+        public void Integer_To_Roman_1_to_10(int number, string roemisch)
         {
             GetRomanNumber(number).Should().Be(roemisch);
         }
@@ -31,7 +31,7 @@ namespace TestProject1
         [InlineData(70, "LXX")]
         [InlineData(99, "XCIX")]
         [InlineData(100, "C")]
-        public void Check_Roemisch_11_to_100(int number, string roemisch)
+        public void Integer_To_Roman_11_to_100(int number, string roemisch)
         {
             GetRomanNumber(number).Should().Be(roemisch);
         }
@@ -41,7 +41,7 @@ namespace TestProject1
         [InlineData(1459, "MCDLIX")]
         [InlineData(2149, "MMCXLIX")]
         [InlineData(2999, "MMCMXCIX")]
-        public void Check_Roemisch_101_to_3000(int number, string roemisch)
+        public void Integer_To_Roman_101_to_3000(int number, string roemisch)
         {
             GetRomanNumber(number).Should().Be(roemisch);
         }
@@ -56,13 +56,13 @@ namespace TestProject1
         [InlineData(1459, "MCDLIX")]
         [InlineData(2149, "MMCXLIX")]
         [InlineData(2999, "MMCMXCIX")]
-        public void Integer_To_Roman_1_to_3000(int integer, string romanNumber)
+        public void Roman_To_Integer_1_to_3000(int integer, string romanNumber)
         {
             ConvertRomanNumber(romanNumber).Should().Be(integer);
         }
 
         [Fact]
-        public void BelowZeroNotSupported()
+        public void Below_Zero_Not_Supported()
         {
             Action act = () => GetRomanNumber(0);
             act.Should().Throw<ArgumentOutOfRangeException>("0 is not supported number",0);
