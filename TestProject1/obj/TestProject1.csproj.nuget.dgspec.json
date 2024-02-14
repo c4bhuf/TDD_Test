@@ -1,23 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\tmp\\TDD-Test_2\\TDD_Test\\TestProject1\\TestProject1.csproj": {}
+    "C:\\Users\\huf\\Documents\\Github\\TDD_Test\\TestProject1\\TestProject1.csproj": {}
   },
   "projects": {
-    "E:\\tmp\\TDD-Test_2\\TDD_Test\\TestProject1\\TestProject1.csproj": {
+    "C:\\Users\\huf\\Documents\\Github\\TDD_Test\\TestProject1\\TestProject1.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\tmp\\TDD-Test_2\\TDD_Test\\TestProject1\\TestProject1.csproj",
+        "projectUniqueName": "C:\\Users\\huf\\Documents\\Github\\TDD_Test\\TestProject1\\TestProject1.csproj",
         "projectName": "TestProject1",
-        "projectPath": "E:\\tmp\\TDD-Test_2\\TDD_Test\\TestProject1\\TestProject1.csproj",
-        "packagesPath": "C:\\Users\\hau\\.nuget\\packages\\",
-        "outputPath": "E:\\tmp\\TDD-Test_2\\TDD_Test\\TestProject1\\obj\\",
+        "projectPath": "C:\\Users\\huf\\Documents\\Github\\TDD_Test\\TestProject1\\TestProject1.csproj",
+        "packagesPath": "C:\\Users\\huf\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\huf\\Documents\\Github\\TDD_Test\\TestProject1\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
-        ],
         "configFilePaths": [
-          "C:\\Users\\hau\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\huf\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -84,7 +81,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
