@@ -68,6 +68,16 @@ namespace TestProject1
             act.Should().Throw<ArgumentOutOfRangeException>("0 is not supported number",0);
         }
 
+        [Theory]
+        [InlineData("")]
+        [InlineData(" ")]
+        [InlineData(null)]
+        public void Empty_Roman_Numerals_Not_Supported(string romanNumber)
+        {
+            Action act = () => ConvertRomanNumber(romanNumber);
+            act.Should().Throw<ArgumentNullException>();
+        }
+
 
         private static readonly SortedDictionary<char, int> RomanToArabicNumerals = new()
         {
