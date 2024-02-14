@@ -46,6 +46,21 @@ namespace TestProject1
             GetRomanNumber(number).Should().Be(roemisch);
         }
 
+
+        [Theory]
+        [InlineData(8, "VIII")]
+        [InlineData(9, "IX")]
+        [InlineData(45, "XLV")]
+        [InlineData(99, "XCIX")]
+        [InlineData(101, "CI")]
+        [InlineData(1459, "MCDLIX")]
+        [InlineData(2149, "MMCXLIX")]
+        [InlineData(2999, "MMCMXCIX")]
+        public void Integer_To_Roman_1_to_3000(int integer, string romanNumber)
+        {
+            ConvertRomanNumber(romanNumber).Should().Be(integer);
+        }
+
         [Fact]
         public void BelowZeroNotSupported()
         {
@@ -53,6 +68,11 @@ namespace TestProject1
             act.Should().Throw<ArgumentOutOfRangeException>("0 is not supported number",0);
         }
 
+
+        private object ConvertRomanNumber(string romanNumber)
+        {
+            throw new NotImplementedException();
+        }
 
         private static readonly SortedDictionary<int, char> ArabicToRomanNumerals = new()
         {
