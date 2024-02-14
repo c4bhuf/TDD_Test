@@ -12,7 +12,10 @@ namespace TestProject1
 
         string GetRoemisch(int i)
         {
-            return "";
+            if (i == 1)
+                return "I";
+
+            return "error";
         }
         /*
          * I
