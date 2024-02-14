@@ -110,7 +110,7 @@ namespace TestProject1
                 if (!RomanToArabicNumerals.TryGetValue(romanNumeral, out var integer))
                     throw new ArgumentOutOfRangeException(nameof(romanNumber));
                 
-                if (TryGetNumberToSubstract(romanNumber, romanNumberIndex, romanNumeral, out var numberToSubstract))
+                if (TryGetNumberToSubstract(romanNumber, romanNumberIndex, integer, out var numberToSubstract))
                     resultInteger -= numberToSubstract;
                 else
                     resultInteger += integer;
@@ -119,7 +119,7 @@ namespace TestProject1
             return resultInteger;
         }
 
-        private static bool TryGetNumberToSubstract(string romanNumber, int romanNumberIndex, char romanNumeral, out int numberToSubstract)
+        private static bool TryGetNumberToSubstract(string romanNumber, int romanNumberIndex, int integer, out int numberToSubstract)
         {
             numberToSubstract = 0;
 
@@ -131,10 +131,10 @@ namespace TestProject1
                     if (!RomanToArabicNumerals.TryGetValue(nextRomanNumeral, out var nextInteger))
                         throw new ArgumentOutOfRangeException(nameof(nextRomanNumeral));
 
-                    if (RomanToArabicNumerals[romanNumeral] >= nextInteger)
+                    if (integer >= nextInteger)
                         break;
 
-                    numberToSubstract += RomanToArabicNumerals[romanNumeral];
+                    numberToSubstract += integer;
                 }
             }
 
