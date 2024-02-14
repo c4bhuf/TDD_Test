@@ -20,6 +20,19 @@ namespace TestProject1
         {
             GetRoemisch(number).Should().Be(roemisch);
         }
+        
+        [Theory]
+        [InlineData(11, "XI")]
+        [InlineData(37, "XXXVII")]
+        [InlineData(45, "VL")]
+        [InlineData(50, "L")]
+        [InlineData(70, "LXX")]
+        [InlineData(99, "IM")]
+        [InlineData(100, "M")]
+        public void Check_Roemisch_11_to_100(int number, string roemisch)
+        {
+            GetRoemisch(number).Should().Be(roemisch);
+        }
 
         [Fact]
         public void BelowZeroNotSupported()
