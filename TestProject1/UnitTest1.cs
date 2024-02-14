@@ -78,6 +78,14 @@ namespace TestProject1
             act.Should().Throw<ArgumentNullException>();
         }
 
+        [Theory]
+        [InlineData("U")]
+        [InlineData("MMCMXCIXS")]
+        public void Undefined_Roman_Numerals_Not_Supported(string romanNumber)
+        {
+            Action act = () => ConvertRomanNumber(romanNumber);
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
 
         private static readonly SortedDictionary<char, int> RomanToArabicNumerals = new()
         {
