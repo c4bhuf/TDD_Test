@@ -69,9 +69,47 @@ namespace TestProject1
         }
 
 
-        private object ConvertRomanNumber(string romanNumber)
+        private static readonly SortedDictionary<char, int> RomanToArabicNumerals = new()
         {
-            throw new NotImplementedException();
+            { 'M',  1000 },
+            { 'D', 500 },
+            { 'C', 100 },
+            { 'L' , 50 },
+            { 'X', 10 },
+            { 'V', 5 },
+            { 'I', 1 }
+        };
+
+        public static int ConvertRomanNumber(string romanNumber)
+        {
+            var resultInteger = 0;
+            for (int i = 0; i < romanNumber.Length; i++)
+            {
+                char romanNumeral = romanNumber[i];
+                var arabicNumeral = RomanToArabicNumerals[romanNumeral];
+                var subtract = 0;
+
+                for (int j = 1; j < 4; j++)
+                {
+                    if (i + j < romanNumber.Length)
+                    {
+                        char nextRomanNumeral = romanNumber[i + j];
+                        if (RomanToArabicNumerals[romanNumeral] >= RomanToArabicNumerals[nextRomanNumeral])
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            subtract += RomanToArabicNumerals[romanNumeral];
+                        }
+                    }
+                }
+                if(subtract == 0)
+                    resultInteger += arabicNumeral;
+                else
+                    resultInteger -= subtract;
+            }
+            return resultInteger;
         }
 
         private static readonly SortedDictionary<int, char> ArabicToRomanNumerals = new()
