@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
 
 namespace TestProject1
@@ -7,11 +8,14 @@ namespace TestProject1
         [Theory]
         [InlineData(1, "I")]
         [InlineData(2, "II")]
-        //[InlineData(4, "IV")]
+        [InlineData(3, "III")]
+        [InlineData(4, "IV")]
         [InlineData(5, "V")]
+        [InlineData(6, "VI")]
         [InlineData(7, "VII")]
-        //[InlineData(9, "IX")]
-        //[InlineData(10, "X")]
+        [InlineData(8, "VIII")]
+        [InlineData(9, "IX")]
+        [InlineData(10, "X")]
         public void Check_Roemisch_1_to_10(int number, string roemisch)
         {
             GetRoemisch(number).Should().Be(roemisch);
@@ -27,21 +31,16 @@ namespace TestProject1
 
         string GetRoemisch(int i)
         {
-            if(i <= 0)
-                throw new ArgumentOutOfRangeException(nameof(i),$"{i} is not supported number");
-
-            if (i <= 3)
-                return new string('I', i);
-
-            if (i <= 8)
+            return i switch
             {
-                var res = i % 5;
-
-                var strRes = $"V{new string('I', res)}";
-                return strRes;
-            }
-                
-            throw new NotImplementedException($"{i} cannot be parsed");
+                <= 0 => throw new ArgumentOutOfRangeException(nameof(i), $"{i} is not supported number"),
+                <= 3 => new string('I', i),
+                4    => "IV",
+                <= 8 => "V" + new string('I', i % 5),
+                9    => "IX",
+                10   => "X",
+                _    => throw new NotImplementedException($"{i} cannot be parsed"),
+            };
         }
         /*
          * I
