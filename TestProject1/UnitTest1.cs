@@ -7,17 +7,6 @@ namespace TestProject1
 {
     public class UnitTest1
     {
-        private static SortedDictionary<int, char> ArabicToRomanNumerals = new() 
-        {
-            { 1000, 'M' },
-            { 500, 'D' },
-            { 100, 'C' },
-            { 50, 'L' },
-            { 10, 'X' },
-            { 5, 'V' },
-            { 1, 'I' }
-        };
-
         [Theory]
         [InlineData(1, "I")]
         [InlineData(2, "II")]
@@ -31,7 +20,7 @@ namespace TestProject1
         [InlineData(10, "X")]
         public void Check_Roemisch_1_to_10(int number, string roemisch)
         {
-            GetRoemisch(number).Should().Be(roemisch);
+            GetRomanNumber(number).Should().Be(roemisch);
         }
         
         [Theory]
@@ -44,7 +33,7 @@ namespace TestProject1
         [InlineData(100, "C")]
         public void Check_Roemisch_11_to_100(int number, string roemisch)
         {
-            GetRoemisch(number).Should().Be(roemisch);
+            GetRomanNumber(number).Should().Be(roemisch);
         }
 
         [Theory]
@@ -54,35 +43,45 @@ namespace TestProject1
         [InlineData(2999, "MMCMXCIX")]
         public void Check_Roemisch_101_to_3000(int number, string roemisch)
         {
-            GetRoemisch(number).Should().Be(roemisch);
+            GetRomanNumber(number).Should().Be(roemisch);
         }
 
         [Fact]
         public void BelowZeroNotSupported()
         {
-            Action act = () => GetRoemisch(0);
+            Action act = () => GetRomanNumber(0);
             act.Should().Throw<ArgumentOutOfRangeException>("0 is not supported number",0);
         }
 
-        public string GetRoemisch(int i)
-        {
-            if (i <= 0)
-                throw new ArgumentOutOfRangeException(nameof(i), $"{i} is not supported number");
 
-            int teiler;
-            int rest = i;
+        private static readonly SortedDictionary<int, char> ArabicToRomanNumerals = new()
+        {
+            { 1000, 'M' },
+            { 500, 'D' },
+            { 100, 'C' },
+            { 50, 'L' },
+            { 10, 'X' },
+            { 5, 'V' },
+            { 1, 'I' }
+        };
+
+        public static string GetRomanNumber(int arabicNumber)
+        {
+            if (arabicNumber <= 0)
+                throw new ArgumentOutOfRangeException(nameof(arabicNumber), $"{arabicNumber} is not supported number");
+
+            int remainder = arabicNumber;
             var stringBuilder = new StringBuilder();
             foreach (var numberToRoman in ArabicToRomanNumerals.OrderByDescending(kvp => kvp.Key))
             {
-                teiler = AppendRomanNumber(ref rest, stringBuilder, numberToRoman.Value, numberToRoman.Key);
-
-                rest = SubtractionRule(rest, stringBuilder, numberToRoman.Key);
+                remainder = AppendRomanNumber(remainder, stringBuilder, numberToRoman.Value, numberToRoman.Key);
+                remainder = AppendBySubtractionRule(remainder, stringBuilder, numberToRoman.Key);
             }
 
             return stringBuilder.ToString();
         }
 
-        private static int SubtractionRule(int rest, StringBuilder stringBuilder, int number)
+        private static int AppendBySubtractionRule(int remainder, StringBuilder stringBuilder, int number)
         {
             if (number == 1)
                 return 0;
@@ -91,44 +90,35 @@ namespace TestProject1
             var tenPowOfNumberOfZeros = (int)Math.Pow(10, numberOfZeros);
             var numberToSubstract = tenPowOfNumberOfZeros - number == 0 ? (int)Math.Pow(10, numberOfZeros - 1) : tenPowOfNumberOfZeros;
 
-            if (rest >= number - numberToSubstract)
+            if (remainder >= number - numberToSubstract)
             {
-                rest -= number - numberToSubstract;
+                remainder -= number - numberToSubstract;
 
                 stringBuilder.Append(ArabicToRomanNumerals[numberToSubstract]);
                 stringBuilder.Append(ArabicToRomanNumerals[number]);
             }
 
-            return rest;
+            return remainder;
         }
 
-        private static int AppendRomanNumber(ref int rest, StringBuilder stringBuilder, char romanNumber, int number)
+        private static int AppendRomanNumber(int remainder, StringBuilder stringBuilder, char romanNumber, int arabicNumber)
         {
-            int teiler;
-            if ((teiler = CalculateTeiler(rest, number)) >= 1)
+            var fitsInto = remainder.FitsInto(arabicNumber);
+            if (fitsInto >= 1)
             {
-                stringBuilder.Append(new string(romanNumber, teiler));
-                rest -= teiler * number;
+                stringBuilder.Append(new string(romanNumber, fitsInto));
+                remainder -= fitsInto * arabicNumber;
             }
 
-            return teiler;
+            return remainder;
         }
+    }
 
-        public static int CalculateTeiler(int rest, int number)
+    public static class IntExtensions
+    {
+        public static int FitsInto(this int x, int y)
         {
-            return (int)Math.Floor((double)rest / number);
+            return (int)Math.Floor((double)x / y);
         }
-
-        /*
-         * I
-         * II
-         * III
-         * V
-         * X
-         * L
-         * C
-         * D
-         * M
-         */
     }
 }
