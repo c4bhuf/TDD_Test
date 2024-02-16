@@ -12,41 +12,32 @@ namespace TestProject1
         [InlineData(1, "I")]
         [InlineData(2, "II")]
         [InlineData(3, "III")]
-        [InlineData(4, "IV")]
         [InlineData(5, "V")]
-        [InlineData(6, "VI")]
-        [InlineData(7, "VII")]
         [InlineData(8, "VIII")]
-        [InlineData(9, "IX")]
         [InlineData(10, "X")]
-        public void Integer_To_Roman_1_to_10(int number, string roemisch)
-        {
-            GetRomanNumber(number).Should().Be(roemisch);
-        }
-
-        [Theory]
         [InlineData(11, "XI")]
         [InlineData(37, "XXXVII")]
-        [InlineData(45, "XLV")]
         [InlineData(50, "L")]
         [InlineData(70, "LXX")]
-        [InlineData(99, "XCIX")]
         [InlineData(100, "C")]
-        public void Integer_To_Roman_11_to_100(int number, string roemisch)
+        [InlineData(101, "CI")]
+        [InlineData(3000, "MMM")]
+        public void Converts_1_To_3000_To_Roman(int integer, string romanNumber)
         {
-            GetRomanNumber(number).Should().Be(roemisch);
+            GetRomanNumber(integer).Should().Be(romanNumber);
         }
 
         [Theory]
-        [InlineData(101, "CI")]
-        [InlineData(1459, "MCDLIX")]
+        [InlineData(4, "IV")]
+        [InlineData(9, "IX")]
+        [InlineData(45, "XLV")]
+        [InlineData(99, "XCIX")]
         [InlineData(2149, "MMCXLIX")]
         [InlineData(2999, "MMCMXCIX")]
-        public void Integer_To_Roman_101_to_3000(int number, string roemisch)
+        public void Roman_Convert_Satisfies_Substraction_Rule(int integer, string romanNumber)
         {
-            GetRomanNumber(number).Should().Be(roemisch);
+            GetRomanNumber(integer).Should().Be(romanNumber);
         }
-
 
         [Theory]
         [InlineData(8, "VIII")]
@@ -57,7 +48,19 @@ namespace TestProject1
         [InlineData(1459, "MCDLIX")]
         [InlineData(2149, "MMCXLIX")]
         [InlineData(2999, "MMCMXCIX")]
-        public void Roman_To_Integer_1_to_3000(int integer, string romanNumber)
+        public void Converts_1_To_3000_Roman_To_Integer(int integer, string romanNumber)
+        {
+            ConvertRomanNumber(romanNumber).Should().Be(integer);
+        }
+
+        [Theory]
+        [InlineData(4, "IV")]
+        [InlineData(9, "IX")]
+        [InlineData(45, "XLV")]
+        [InlineData(99, "XCIX")]
+        [InlineData(2149, "MMCXLIX")]
+        [InlineData(2999, "MMCMXCIX")]
+        public void Integer_Convert_Satisfies_Substraction_Rule(int integer, string romanNumber)
         {
             ConvertRomanNumber(romanNumber).Should().Be(integer);
         }
@@ -73,7 +76,7 @@ namespace TestProject1
         [InlineData("")]
         [InlineData(" ")]
         [InlineData(null)]
-        public void Empty_Roman_Numerals_Not_Supported(string romanNumber)
+        public void Empty_Roman_Number_Not_Supported(string romanNumber)
         {
             Action act = () => ConvertRomanNumber(romanNumber);
             act.Should().Throw<ArgumentNullException>();
